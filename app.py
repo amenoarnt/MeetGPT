@@ -131,54 +131,54 @@ def tab_gravar_reuniao():
 
         st.success('Arquivo salvo com sucesso: {}'.format(file_path))
 
-    st.markdown('## Gravar reunião')
-    st.markdown('Clique no botão para começar a gravar')
-    st.markdown('A gravação será salva automaticamente ao fim da reunião')
-    webrtx_ctx = webrtc_streamer(
-        key="recebe_audio",
-        mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=1024,
-        media_stream_constraints={'video': False, 'audio': True},
-    )
+    # st.markdown('## Gravar reunião')
+    # st.markdown('Clique no botão para começar a gravar')
+    # st.markdown('A gravação será salva automaticamente ao fim da reunião')
+    # webrtx_ctx = webrtc_streamer(
+    #     key="recebe_audio",
+    #     mode=WebRtcMode.SENDONLY,
+    #     audio_receiver_size=1024,
+    #     media_stream_constraints={'video': False, 'audio': True},
+    # )
 
-    if not webrtx_ctx.state.playing:
-        st.markdown("Comece a falar!")
-        return
+    # if not webrtx_ctx.state.playing:
+    #     st.markdown("Comece a falar!")
+    #     return
 
-    container  = st.empty()
-    container.markdown('Estou captando áudio...')
-    pasta_reuniao = PASTA_ARQUIVOS / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-    pasta_reuniao.mkdir()
+    # container  = st.empty()
+    # container.markdown('Estou captando áudio...')
+    # pasta_reuniao = PASTA_ARQUIVOS / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+    # pasta_reuniao.mkdir()
 
-    ultima_transcricao = time.time()
-    audio_completo = pydub.AudioSegment.empty()
-    audio_chunk = pydub.AudioSegment.empty()
-    transcricao = ''
+    # ultima_transcricao = time.time()
+    # audio_completo = pydub.AudioSegment.empty()
+    # audio_chunk = pydub.AudioSegment.empty()
+    # transcricao = ''
 
-    while True: 
-        if webrtx_ctx.audio_receiver:
-            try: 
-                frames_de_audio = webrtx_ctx.audio_receiver.get_frames(timeout=1)
-            except queue.Empty:
-                time.sleep(0.1)
-                continue
-            audio_completo = adiciona_chunk_audio(frames_de_audio, audio_completo)
-            audio_chunk = adiciona_chunk_audio(frames_de_audio, audio_chunk)
-            if len(audio_chunk) > 0:
-                audio_completo.export(pasta_reuniao /'audio.mp3')
-                agora = time.time()
-                if agora - ultima_transcricao > 5: 
-                    ultima_transcricao = agora
-                    audio_chunk.export(pasta_reuniao / 'audio_temp.mp3')
-                    transcricao_chunk = transcreve_audio(pasta_reuniao / 'audio_temp.mp3')
-                    transcricao += transcricao_chunk
-                    salva_arquivo(pasta_reuniao / 'transcricao.txt', transcricao)
-                    container.markdown(transcricao)
+    # while True: 
+    #     if webrtx_ctx.audio_receiver:
+    #         try: 
+    #             frames_de_audio = webrtx_ctx.audio_receiver.get_frames(timeout=1)
+    #         except queue.Empty:
+    #             time.sleep(0.1)
+    #             continue
+    #         audio_completo = adiciona_chunk_audio(frames_de_audio, audio_completo)
+    #         audio_chunk = adiciona_chunk_audio(frames_de_audio, audio_chunk)
+    #         if len(audio_chunk) > 0:
+    #             audio_completo.export(pasta_reuniao /'audio.mp3')
+    #             agora = time.time()
+    #             if agora - ultima_transcricao > 5: 
+    #                 ultima_transcricao = agora
+    #                 audio_chunk.export(pasta_reuniao / 'audio_temp.mp3')
+    #                 transcricao_chunk = transcreve_audio(pasta_reuniao / 'audio_temp.mp3')
+    #                 transcricao += transcricao_chunk
+    #                 salva_arquivo(pasta_reuniao / 'transcricao.txt', transcricao)
+    #                 container.markdown(transcricao)
 
-                    audio_chunk = pydub.AudioSegment.empty()
+    #                 audio_chunk = pydub.AudioSegment.empty()
 
-        else: 
-            break
+    #     else: 
+    #         break
 
 
 
