@@ -8,8 +8,12 @@ import queue
 import pydub
 from dotenv import load_dotenv, find_dotenv
 import openai
+import os
 
 _ = load_dotenv(find_dotenv())
+
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 PASTA_ARQUIVOS = Path(__file__).parent / 'arquivos'
