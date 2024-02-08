@@ -120,7 +120,7 @@ def tab_gravar_reuniao():
     st.markdown('## Upload de arquivo de áudio')
     uploaded_file = st.file_uploader('Selecione um arquivo de áudio', type=['mp3', 'wav', 'ogg', 'flac'])
     if uploaded_file is not None:
-        pasta_arquivo = pasta_reuniao = PASTA_ARQUIVOS / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+        pasta_arquivo = PASTA_ARQUIVOS / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
         if not pasta_arquivo.exists():
             pasta_arquivo.mkdir(parents=True, exist_ok=True)
         file_path = pasta_arquivo / uploaded_file.name
@@ -128,8 +128,13 @@ def tab_gravar_reuniao():
         # Write the uploaded file to the new path
         with open(file_path, "wb") as f:
             f.write(uploaded_file.read())
-
         st.success('Arquivo salvo com sucesso: {}'.format(file_path))
+
+        ultima_transcricao = time.time()
+        transcricao = ''
+        transcricao_resultado = transcreve_audio(file_path)
+        salva_arquivo(pasta_arquivo / 'transcricao.txt', transcricao_resultado)
+
 
     # st.markdown('## Gravar reunião')
     # st.markdown('Clique no botão para começar a gravar')
