@@ -119,21 +119,31 @@ def adiciona_chunk_audio(frames_de_audio, audio_chunk):
 def tab_gravar_reuniao():
     st.markdown('## Upload de arquivo de áudio')
     uploaded_file = st.file_uploader('Selecione um arquivo de áudio', type=['mp3', 'wav', 'ogg', 'flac'])
+
     if uploaded_file is not None:
-        pasta_arquivo = PASTA_ARQUIVOS / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-        if not pasta_arquivo.exists():
-            pasta_arquivo.mkdir(parents=True, exist_ok=True)
-        file_path = pasta_arquivo / uploaded_file.name
+        # Initialize or get the current uploaded file name in session state
+        current_file_name = st.session_state.get('uploaded_file_name', '')
+        
+        # Check if the current uploaded file has been processed already
+        if uploaded_file.name != current_file_name:
+            # Update the session state with the new file name
+            st.session_state['uploaded_file_name'] = uploaded_file.name
+            
+            pasta_arquivo = PASTA_ARQUIVOS / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            if not pasta_arquivo.exists():
+                pasta_arquivo.mkdir(parents=True, exist_ok=True)
+            file_path = pasta_arquivo / uploaded_file.name
 
-        # Write the uploaded file to the new path
-        with open(file_path, "wb") as f:
-            f.write(uploaded_file.read())
-        st.success('Arquivo salvo com sucesso: {}'.format(file_path))
+            # Write the uploaded file to the new path
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.read())
+            st.success('Arquivo salvo com sucesso: {}'.format(file_path))
 
-        ultima_transcricao = time.time()
-        transcricao = ''
-        transcricao_resultado = transcreve_audio(file_path)
-        salva_arquivo(pasta_arquivo / 'transcricao.txt', transcricao_resultado)
+            # Process the file as needed (e.g., transcription)
+            transcricao_resultado = transcreve_audio(file_path)
+            salva_arquivo(pasta_arquivo / 'transcricao.txt', transcricao_resultado)
+        else:
+            st.info('Arquivo já processado.')
 
 
     # st.markdown('## Gravar reunião')
