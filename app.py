@@ -25,16 +25,21 @@ PASTA_ARQUIVOS.mkdir(exist_ok=True)
 # -Se aplicável, uma lista de tópicos a serem discutuidos nas próximas reuniões."'
 
 PROMPT = '''
-Faça o resumo do texto delimitado por ####.
-O texto é a transcrição de uma reunião.
-O resumo indicar quantas pessoas participaram da reunião.
+Te providenciarei a transcrição de uma reunião e a sua tarefa é fazer um resumo da reunião.
+Inicialmente, você deve identificar os participantes da reunião, caso não seja possível identificar algum participante, você deve identificá-lo pelo sexo e atribuir um número para ele. Por exemplo: "Participante Masculino 1" ou "Participante Feminino 1";
 O resumo deve ser detalhado e conter os principais pontos discutidos.
 O resumo deve ter no máximo 500 caracteres.
 O resumo deve estar em texto corrido. 
 Em seguida, devem ser apresentados todos acordos e combinados feitos na reunião no formato de bullet points.
-No final, devem ser apresentadas as ações (action points) que devem ser tomadas após a reunião, com a indicação do responsável.
+No final, devem ser apresentadas as ações (action items) que devem ser tomadas após a reunião, com a indicação do responsável.
 
 O formato do texto que eu desejo é o seguinte:
+**Participantes**:
+- Nome do participante 1 (caso não seja possível identificar o nome do participante, identificar pelo sexo e atribuir um número para ele. Por exemplo: "Participante Masculino 1" ou "Participante Feminino 1")
+- Nome do participante 2 (caso não seja possível identificar o nome do participante, identificar pelo sexo e atribuir um número para ele. Por exemplo: "Participante Masculino 2" ou "Participante Feminino 2")
+- Nome do participante 3 (caso não seja possível identificar o nome do participante, identificar pelo sexo e atribuir um número para ele. Por exemplo: "Participante Masculino 3" ou "Participante Feminino 3")
+- Nome do participante n (caso não seja possível identificar o nome do participante, identificar pelo sexo e atribuir um número para ele. Por exemplo: "Participante Masculino n" ou "Participante Feminino n")
+
 **Resumo da reunião**:
 - escrever aqui o resumo
 
@@ -44,7 +49,7 @@ O formato do texto que eu desejo é o seguinte:
 - acordo 3 
 - acordo n
 
-**Action points da reunião**:
+**Action items da reunião**:
 - ação 1 (responsável)
 - ação 2 (responsável)
 - ação 3 (responsável)
