@@ -27,20 +27,28 @@ PASTA_ARQUIVOS.mkdir(exist_ok=True)
 PROMPT = '''
 Faça o resumo do texto delimitado por ####.
 O texto é a transcrição de uma reunião.
-O resumo deve contar com os principais assuntos abordados.
-O resumo deve ter no máximo 300 caracteres.
+O resumo indicar quantas pessoas participaram da reunião.
+O resumo deve ser detalhado e conter os principais pontos discutidos.
+O resumo deve ter no máximo 500 caracteres.
 O resumo deve estar em texto corrido. 
-No final, devem ser apresentados todos acordos e combinados feitos na reunião no formato de bullet points.
+Em seguida, devem ser apresentados todos acordos e combinados feitos na reunião no formato de bullet points.
+No final, devem ser apresentadas as ações (action points) que devem ser tomadas após a reunião, com a indicação do responsável.
 
 O formato do texto que eu desejo é o seguinte:
 **Resumo da reunião**:
 - escrever aqui o resumo
 
 **Acordos da reunião**: 
-- acordo 1
-- acordo 2
-- acordo 3
+- acordo 1 
+- acordo 2 
+- acordo 3 
 - acordo n
+
+**Action points da reunião**:
+- ação 1 (responsável)
+- ação 2 (responsável)
+- ação 3 (responsável)
+- ação n (responsável)
 '''
 
 client = openai.OpenAI()
