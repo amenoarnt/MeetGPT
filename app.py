@@ -9,6 +9,7 @@ import pydub
 from dotenv import load_dotenv, find_dotenv
 import openai
 import os
+import glob
 
 _ = load_dotenv(find_dotenv())
 
@@ -216,31 +217,38 @@ def tab_selecao_reuniao():
     reunioes_dict = listar_reunioes()
 
     if len(reunioes_dict) > 0:
-        reuniao_selecionada = st.selectbox('Selecione uma reunião', 
-                                       list(reunioes_dict.values()))
+        reuniao_selecionada = st.selectbox('Selecione uma reunião', list(reunioes_dict.values()))
         st.divider()
         reuniao_data = [key for key, value in reunioes_dict.items() if value == reuniao_selecionada][0]
         pasta_reuniao = PASTA_ARQUIVOS / reuniao_data
+
         if not (pasta_reuniao / 'titulo.txt').exists():
             st.warning('Adicione título à reunião')
             titulo_reuniao = st.text_input('Título da reunião')
-            st.button('Salvar', 
-                      on_click=salvar_titulo,
-                      args=(pasta_reuniao, titulo_reuniao))
+            st.button('Salvar', on_click=salvar_titulo, args=(pasta_reuniao, titulo_reuniao))
         else:
             titulo = le_arquivo(pasta_reuniao / 'titulo.txt')
             transcricao = le_arquivo(pasta_reuniao / 'transcricao.txt')
             resumo = le_arquivo(pasta_reuniao / 'resumo.txt')
-            audio_file = open(pasta_reuniao / 'audio.mp3', 'rb')
-            audio_bytes = audio_file.read()
-            if resumo == '':
-                gerar_resumo(pasta_reuniao)
-            st.markdown(f'## {titulo} ##')
-            st.markdown(f'{resumo}')
-            st.markdown('### Transcrição ###')
-            st.markdown(transcricao)
-            st.markdown('### Gravação ###')
-            st.audio(audio_bytes)
+
+            # Find any audio file dynamically, covering multiple extensions
+            audio_files_patterns = ['*.mp3', '*.wav', '*.ogg', '*.flac']
+            found_audio_files = []
+            for pattern in audio_files_patterns:
+                found_audio_files.extend(glob.glob(f'{pasta_reuniao}/{pattern}'))
+
+            if found_audio_files:
+                audio_file_path = found_audio_files[0]  # Select the first audio file
+                with open(audio_file_path, 'rb') as audio_file:
+                    audio_bytes = audio_file.read()
+                    st.markdown(f'## {titulo} ##')
+                    st.markdown(f'{resumo}')
+                    st.markdown('### Transcrição ###')
+                    st.markdown(transcricao)
+                    st.markdown('### Gravação ###')
+                    st.audio(audio_bytes)
+            else:
+                st.error('Nenhum arquivo de áudio encontrado na pasta da reunião.')
 
 
 
