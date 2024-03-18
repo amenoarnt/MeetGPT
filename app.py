@@ -225,31 +225,34 @@ def tab_selecao_reuniao():
         if not (pasta_reuniao / 'titulo.txt').exists():
             st.warning('Adicione título à reunião')
             titulo_reuniao = st.text_input('Título da reunião')
-            st.button('Salvar', on_click=salvar_titulo, args=(pasta_reuniao, titulo_reuniao))
+            if st.button('Salvar'):
+                salvar_titulo(pasta_reuniao, titulo_reuniao)
         else:
             titulo = le_arquivo(pasta_reuniao / 'titulo.txt')
             transcricao = le_arquivo(pasta_reuniao / 'transcricao.txt')
             resumo = le_arquivo(pasta_reuniao / 'resumo.txt')
+            
+            # Check and possibly generate a summary if it's missing or empty
+            if not resumo.strip():  # Assuming gerar_resumo modifies 'resumo.txt' directly
+                gerar_resumo(pasta_reuniao)
+                resumo = le_arquivo(pasta_reuniao / 'resumo.txt')
 
-            # Find any audio file dynamically, covering multiple extensions
-            audio_files_patterns = ['*.mp3', '*.wav', '*.ogg', '*.flac']
-            found_audio_files = []
-            for pattern in audio_files_patterns:
-                found_audio_files.extend(glob.glob(f'{pasta_reuniao}/{pattern}'))
-
-            if found_audio_files:
-                audio_file_path = found_audio_files[0]  # Select the first audio file
+            # Dynamically find the audio file for multiple file types
+            audio_files = glob.glob(f'{pasta_reuniao}/*.mp3') + glob.glob(f'{pasta_reuniao}/*.wav') + glob.glob(f'{pasta_reuniao}/*.ogg') + glob.glob(f'{pasta_reuniao}/*.flac')
+            if audio_files:
+                audio_file_path = audio_files[0]  # Assuming only one audio file per meeting
                 with open(audio_file_path, 'rb') as audio_file:
                     audio_bytes = audio_file.read()
-                    st.markdown(f'## {titulo} ##')
-                    st.markdown(f'{resumo}')
-                    st.markdown('### Transcrição ###')
-                    st.markdown(transcricao)
-                    st.markdown('### Gravação ###')
-                    st.audio(audio_bytes)
+
+            st.markdown(f'## {titulo} ##')
+            st.markdown(f'{resumo}')
+            st.markdown('### Transcrição ###')
+            st.markdown(transcricao)
+            st.markdown('### Gravação ###')
+            if audio_files:
+                st.audio(audio_bytes)
             else:
                 st.error('Nenhum arquivo de áudio encontrado na pasta da reunião.')
-
 
 
 
